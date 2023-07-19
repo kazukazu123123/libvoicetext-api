@@ -1,4 +1,3 @@
-use reqwest::Response;
 use serde::{Deserialize, Serialize};
 use serde_urlencoded;
 use std::str::FromStr;
@@ -69,18 +68,22 @@ pub async fn get_audio_data(
     api_key: String,
     options: ApiOptions,
     timeout: Duration,
-) -> reqwest::Result<Response> {
+) -> reqwest::Result<Vec<u8>> {
     let query_paramator = serde_urlencoded::to_string(options).unwrap();
 
     const API_ENDPOINT: &str = "https://api.voicetext.jp/v1/tts";
 
     let client = reqwest::Client::builder().timeout(timeout).build()?;
 
-    client
+    let response = client
         .post(API_ENDPOINT)
         .basic_auth(api_key, None::<&str>)
         .header("Content-Type", "application/x-www-form-urlencoded")
         .body(query_paramator)
         .send()
-        .await
+        .await?;
+
+    let audio_data = response.bytes().await?;
+
+    Ok(audio_data.to_vec())
 }
