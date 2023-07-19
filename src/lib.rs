@@ -81,9 +81,10 @@ pub async fn get_audio_data(
         .header("Content-Type", "application/x-www-form-urlencoded")
         .body(query_paramator)
         .send()
-        .await?;
+        .await?
+        .error_for_status();
 
-    let audio_data = response.bytes().await?.to_vec();
+    let audio_data = response?.bytes().await?.to_vec();
 
     Ok(audio_data)
 }
