@@ -83,7 +83,7 @@ pub async fn get_audio_data(
         .send()
         .await?;
 
-    let audio_data = response.bytes().await?;
+    let audio_data = response.bytes().await?.to_vec();
 
-    Ok(audio_data.to_vec())
+    Ok(audio_data)
 }
