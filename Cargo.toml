@@ -11,4 +11,4 @@ serde = { version = "=1.0.183", features = ["derive"] }
 serde_urlencoded = "=0.7.1"
 
 [dev-dependencies]
-tokio = {version = "=1.29.1", features = ["macros"]}
+tokio = {version = "=1.31.0", features = ["macros"]}
