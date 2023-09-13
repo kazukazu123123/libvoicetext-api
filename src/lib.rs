@@ -2,6 +2,7 @@ use serde::{Deserialize, Serialize};
 use serde_urlencoded;
 use std::str::FromStr;
 use std::time::Duration;
+use bytes::Bytes;
 
 #[derive(Deserialize, Serialize)]
 #[serde(rename_all = "snake_case")]
@@ -68,7 +69,7 @@ pub async fn get_audio_data(
     api_key: String,
     options: ApiOptions,
     timeout: Duration,
-) -> reqwest::Result<Vec<u8>> {
+) -> reqwest::Result<Bytes> {
     let query_paramator = serde_urlencoded::to_string(options).unwrap();
 
     const API_ENDPOINT: &str = "https://api.voicetext.jp/v1/tts";
@@ -84,7 +85,5 @@ pub async fn get_audio_data(
         .await?
         .error_for_status();
 
-    let audio_data = response?.bytes().await?.to_vec();
-
-    Ok(audio_data)
+    Ok(response?.bytes().await?)
 }
